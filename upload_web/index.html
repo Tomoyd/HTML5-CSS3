@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Web</title>
+    <style>
+      img {
+        max-width: 100%;
+        max-height: 100%;
+      }
+      #appear-zone {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <input type="file" id="file-upload" accept=".jpg, .png" multiple />
+    <!-- <input type="file" id="file-upload" webkitdirectory /> -->
+    <div id="container">
+      <div id="drop-zone" style="width: 100px; height: 100px; background: blue">
+        drop-zone
+      </div>
+      <div id="appear-zone">your Image appear here</div>
+    </div>
+    <script>
+      const reader = new FileReader();
+      const fileUploader = document.getElementById("file-upload");
+
+      fileUploader.addEventListener("change", (evt) => {
+        const files = evt.target.files;
+        const file = files[0];
+        const size = file.size;
+        // if (size > 1024 * 1024) {
+        //   alert("超过 1M");
+        //   return;
+        // }
+        const img = document.createElement("img");
+        document.body.appendChild(img);
+
+        img.src = URL.createObjectURL(file);
+        // img.src = event.target.result;
+        img.alt = file.name;
+        // reader.readAsDataURL(file);
+
+        // reader.addEventListener("load", (event) => {
+        //   const img = document.createElement("img");
+        //   document.body.appendChild(img);
+        //   img.src = event.target.result;
+        //   img.alt = file.name;
+        // });
+        // reader.addEventListener("progress", (event) => {
+        //   if (event.loaded && event.total) {
+        //     const percent = event.loaded / event.total;
+        //     // progress.value = percent;
+        //     console.log("percent", percent);
+        //   }
+        // });
+      });
+
+      const dropZone = document.getElementById("drop-zone");
+      const appearZone = document.getElementById("appear-zone");
+      dropZone.addEventListener("dragover", (event) => {
+        console.log("drag");
+        event.stopPropagation();
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "copy";
+      });
+
+      dropZone.addEventListener("drop", (event) => {
+        event.preventDefault();
+        const files = event.dataTransfer.files;
+        console.log("files", files);
+        reader.readAsDataURL(files[0]);
+
+        reader.addEventListener("load", (event) => {
+          const img = document.createElement("img");
+          appearZone.appendChild(img);
+          img.src = event.target.result;
+          img.alt = files[0].name;
+        });
+      });
+    </script>
+  </body>
+</html>

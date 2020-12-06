@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Form</title>
+    <link rel="stylesheet" href="css/form.css">
+</head>
+<body>
+<form id="redemption" autocomplete="off">
+    <hgroup>
+        <h1>OsCar Redemption</h1>
+        <h2>
+            Here's your chance to set the record straight:tell us what year the wrong
+            film got nominated, and which film <b>should</b> have received a nod...
+        </h2>
+    </hgroup>
+    <fieldset>
+        <legend>About the offending film (part 1 of 3)</legend>
+        <div>
+            <label for="film">the film in question</label>
+            <input type="text" id="film" name="film" placeholder="e.g.King Kong"
+                   autocomplete="off"
+                   list="awards"
+                   required aria-required="true">
+            <datalist id="awards">
+                <select>
+                    <option value="Best Picture"></option>
+                    <option value="Best Director"></option>
+                    <option value="Best Adapted Screenplay"></option>
+                    <option value="Best Original Screenplay"></option>
+                </select>
+            </datalist>
+        </div>
+        <div>
+            <label for="email">Your Email Address</label>
+            <input id="email" name="email" type="email"
+                placeholder="dwight.shultz@gmail.com"
+                   required aria-required="true">
+        </div>
+        <div>
+            <label for="yearOfCrime">Year Of Crime</label>
+            <input type="number" id="yearOfCrime" name="yearOfCrime" min="1929" max="2015"
+                required aria-required="true">
+        </div>
+        <div>
+            <label for="web">Your web address</label>
+            <input type="url" id="web" name="web" placeholder="www.mysite.com">
+        </div>
+        <div>
+            <label for="tel">Telephone (so we can berate you if you're wrong)</label>
+            <input type="tel" id="tel" placeholder="1-234-56789" required aria-required="true">
+        </div>
+        <div>
+            <label for="search">Search the site ... </label>
+            <input type="search" name="search" placeholder="Wyatt Earp" id="search">
+        </div>
+        <div>
+            <label for="name">Your Name (first and last)</label>
+            <input type="text" id="name" name="name" pattern="([a-zA-Z]{3,30}\s*)+[a-zA-Z]{3,30}"
+                   placeholder="Dwight Schultz" required aria-required="true">
+        </div>
+        <div>
+            <label for="color">Your favorite color</label>
+            <input id="color" name="color" type="color">
+        </div>
+    </fieldset>
+</form>
+</body>
+</html>

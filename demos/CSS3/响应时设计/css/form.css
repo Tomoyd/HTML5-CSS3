@@ -1,0 +1,26 @@
+#redemption{
+    width:100%;
+    font-family: "Consolas";
+    font-weight: 400;
+}
+#redemption hgroup{
+    margin-bottom: 20px;
+}
+#redemption div{
+    width:100%;
+    margin-bottom: 15px;
+    float:left;
+}
+#howYouRateThis, #yearOfCrime{
+    text-align: right;
+}
+input:required {
+    border: 1px solid rgba(253, 8, 8, 0.29);
+}
+input:focus:invalid {
+
+    padding-right: 3px;
+}
+input:focus:valid {
+    padding-right: 3px;
+}
