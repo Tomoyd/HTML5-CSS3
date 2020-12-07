@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>事件委托</title>
+  </head>
+  <body>
+    <!-- 
+          如果对大量的元素建立侦听器会导致代码混乱和繁琐，
+          事件委托是利用事件冒泡技术向父元素增加侦听器，监听任意子元素的事件通知的技术
+       -->
+    <div id="menu">
+      <button data-action="save">Save</button>
+      <button data-action="load">Load</button>
+      <button data-action="search">Search</button>
+    </div>
+    <script>
+      document.addEventListener("click", (event) => {
+        console.log("action", event.target.dataset.action);
+        switch (event.target["dataset"].action) {
+        }
+      });
+    </script>
+  </body>
+</html>

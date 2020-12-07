@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JavaScript性能</title>
+    <style>
+      #wheel {
+        height: 1000px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 
+          1. 滚动：如wheel和touchmove事件可能会取消滚动，页面滚动行为可能需要等到这两个事件完成之后才进行滚动
+          2. 节流防抖
+          3. viewPort getBoundingClientRect
+          4. 交叉观察者
+          5. web worker
+       -->
+    <div id="wheel">hello</div>
+    <script>
+      document.addEventListener(
+        "wheel",
+        async (event) => {
+          //   window.scrollTo(0, 3000);
+          //   let i = 1000;
+          //   //   while (true) {
+          //     console.log(11111);
+          //   }
+          //   await new Promise((resolve) => {
+          //     setTimeout(() => {
+          //       console.log("123", 123);
+          //       resolve(123);
+          //     }, 3000);
+          //   });
+        },
+        { passive: true }
+      );
+    </script>
+  </body>
+</html>

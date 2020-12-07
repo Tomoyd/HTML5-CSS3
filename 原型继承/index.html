@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=<device-width>, initial-scale=1.0" />
+    <title>原型继承</title>
+  </head>
+  <body>
+    <script>
+      /**
+        原型继承
+        从另一个对象访问对象属性的能力，从一个对象访问对象原型属性的能力；
+        使用JavaScript prototype 来对已存在的对象构造器中真假新的属性和方法
+        原型继承使能够可以复用一些属性和方法
+        原型继承的缺点：
+        1. 原型继承循环继承会导致错误
+        2. 对象不能继承多个原型，继承属性通过一个原型链，不可能同时继承两个原型对象
+        3. 原型关系仅适用于对象，原型链只存在对象之间，不能是其他类型，只能是null或一个对象
+
+        原型继承重要字段：
+        __proto__:JavaScript中，所有的对象都有他自己的隐藏,内部的属性[[Prototype]]，我们可以使用__proto__来访问这个属性，
+        所有JS对象一定会有指定的原型对象，这样继承对象就可以访问对象的属性了；
+        Object.create: ES5，可以用new替代，参数是：已有的原型对象和可描述属性对象
+        Object.create(proto, [propertiesObject])
+
+        Object.prototype.constructor:对象的构造器;
+        hasOwnProperty：返回对象是否有自己的属性;
+
+       */
+    </script>
+  </body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>事件冒泡Vs事件捕获</title>
+    <style>
+      .box1 {
+        width: 200px;
+        height: 200px;
+        background-color: yellow;
+      }
+      .box2,
+      .box3 {
+        width: 50%;
+        height: 50%;
+        background-color: red;
+      }
+      .box3 {
+        background-color: blue;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 默认事件冒泡 -->
+    <div class="box1">
+      <div class="box2">
+        <div class="box3"></div>
+      </div>
+    </div>
+    <script>
+      const box1 = document.querySelector(".box1");
+      const box2 = document.querySelector(".box2");
+      const box3 = document.querySelector(".box3");
+      box1.addEventListener(
+        "click",
+        (event) => {
+          console.log("box1", event.target);
+        },
+        true
+      );
+      box2.addEventListener("click", (event) => {
+        console.log("box2");
+      });
+      box3.addEventListener("click", (event) => {
+        console.log("box3");
+      });
+    </script>
+  </body>
+</html>

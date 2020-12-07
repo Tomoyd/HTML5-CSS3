@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- use strict 可以使一些非严格模式下的操作，抛出异常，例如给一个未声明变量赋值，或者使用eval等 -->
+    <script>
+      function test() {
+        "use strict";
+        // name();
+        function name() {
+          console.log("name");
+        }
+        // myVar = 4; //ReferenceError
+        console.log("1234", 1234);
+      }
+      test();
+    </script>
+  </body>
+</html>
