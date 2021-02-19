@@ -1,0 +1,19 @@
+.float-container {
+  overflow: hidden;
+  border: 1px solid black;
+}
+.item1 {
+  float: left;
+  background-color: red;
+  height: 300px;
+}
+.item2 {
+  overflow: hidden;
+  background-color: antiquewhite;
+  height: 200px;
+}
+.item3 {
+  overflow: hidden;
+  height: 220px;
+  background-color: blue;
+}
