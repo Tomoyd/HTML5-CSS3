@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Origin 02</title>
+  </head>
+  <body>
+    <h1>Origin 02</h1>
+    <iframe src="http://localhost:8080 "></iframe>
+    <script>
+      window.onload = () => {
+        window.frames[0].window.postMessage(
+          { data: "我是页面2" },
+          "http://localhost:8080",
+        );
+        window.addEventListener("message", (e) => {
+          console.log(`接收origin1`, e.data);
+        });
+      };
+    </script>
+  </body>
+</html>
