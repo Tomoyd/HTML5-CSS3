@@ -5,95 +5,27 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Upload Files</title>
+    <script src="./index.js"></script>
+    <ul class="ul">
+      <li>0</li>
+      <li>0</li>
+      <li>0</li>
+      <li>0</li>
+      <li>0</li>
+      <li>0</li>
+      <li>0</li>
+      <li>0</li>
+      <li>0</li>
+      <li>0</li>
+      <li>0</li>
+    </ul>
   </head>
   <body>
-    <script>
-      function request({
-        url,
-        method = "post",
-        data,
-        headers = {},
-        requestList,
-      }) {
-        return new Promise((resolve) => {
-          const xhr = new XMLHttpRequest();
-          xhr.open(method, url);
-          Object.keys(headers).forEach((key) => {
-            xhr.setRequestHeader(key, headers[key]);
-          });
-
-          xhr.send(data);
-
-          xhr.onload = (e) => {
-            resolve({ data: e.target.response });
-          };
-        });
-      }
-      const LENGTH = 10;
-      const container = {
-        file: null,
-        data: [],
-      };
-      function handleFleChange(e) {
-        // console.log(`e`, e.target.files[0])
-        const [file] = e.target.files;
-        if (!file) {
-          return;
-        }
-        container.file = file;
-      }
-
-      function createFileChunk(file, length = LENGTH) {
-        const fileChunkList = [];
-        const chunkSize = Math.ceil(file.size / LENGTH);
-        let cur = 0;
-        while (cur < file.size) {
-          fileChunkList.push({ file: file.slice(cur, cur + chunkSize) });
-          cur += chunkSize;
-        }
-
-        return fileChunkList;
-      }
-
-      async function uploadChunks(fileData = [], filename) {
-        const requestList = fileData
-          .map(({ chunk, hash }) => {
-            const formData = new FormData();
-            formData.append("chunk", chunk);
-            formData.append("hash", hash);
-            formData.append("filename", filename);
-            return { formData };
-          })
-          .map(({ formData }) =>
-            request({ url: "http://localhost:3000", data: formData }),
-          );
-        console.log(`requestList`, requestList);
-        await Promise.all(requestList);
-      }
-
-      async function handleUpload() {
-        if (!container.file) return;
-        const fileChunkList = createFileChunk(container.file);
-        const fileData = fileChunkList.map(({ file }, index) => ({
-          chunk: file,
-          hash: container.file.name + "_" + index,
-        }));
-        await uploadChunks(fileData, container.file.name);
-        await mergeRequest();
-      }
-
-      async function mergeRequest() {
-        await request({
-          url: "http://localhost:3000/merge",
-          headers: { "Content-Type": "application/json" },
-          data: JSON.stringify({ filename: container.file.name }),
-        });
-      }
-    </script>
     上传文件
     <div>
       <input type="file" onchange="handleFleChange(event)" />
       <button onclick="handleUpload()">上传</button>
+      <div class="progress"></div>
     </div>
   </body>
 </html>
