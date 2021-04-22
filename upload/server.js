@@ -4,6 +4,8 @@ const multiparty = require("multiparty");
 const fse = require("fs-extra");
 const path = require("path");
 const UPLOAD_DIR = path.resolve(__dirname, "target");
+
+const getExt = (filename) => filename.split(".").pop();
 server.on("request", async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Headers", "*");
@@ -12,10 +14,29 @@ server.on("request", async (req, res) => {
     res.end();
     return;
   }
+  res.status = 200;
+  if (req.url === "/hasExit") {
+    const data = await resolveData(req);
+    const { filename, fileHash } = data;
+
+    if (hasExisted(fileHash, filename, res)) {
+      return true;
+    } else {
+      res.end(
+        JSON.stringify({
+          success: false,
+        }),
+      );
+      return;
+    }
+  }
 
   if (req.url === "/merge") {
     try {
-      await handleMerge(req, res);
+      const ret = await handleMerge(req, res);
+      if (ret) {
+        return;
+      }
       res.end(
         JSON.stringify({
           success: true,
@@ -36,19 +57,22 @@ server.on("request", async (req, res) => {
   if (!error) {
     console.log("object :>> ", files);
     const [chunk] = files.chunk;
-    const [hash] = fields.hash;
-    const [filename] = fields.filename;
+    const [chunkHash] = fields.chunkHash;
+    // const [filename] = fields.filename;
+    const [fileHash] = fields.fileHash;
 
-    const chunkDir = `${UPLOAD_DIR}/${filename.replace(".", "_")}`;
+    const chunkDir = `${UPLOAD_DIR}/${fileHash}`;
     console.log("path :>> ", `${chunkDir}`);
     if (!fse.existsSync(chunkDir)) {
       await fse.mkdirs(chunkDir);
     }
-    console.log("path :>> ", `${chunkDir}/${hash}`);
+
     try {
-      await fse.move(chunk.path, `${chunkDir}/${hash}`);
+      if (!fse.existsSync(`${chunkDir}/${chunkHash}`)) {
+        await fse.move(chunk.path, `${chunkDir}/${chunkHash}`);
+      }
     } catch (e) {
-      console.log("e :>> ", e);
+      console.log("e :>> ", chunkHash);
     }
     res.end("received file chunk");
   }
@@ -64,21 +88,43 @@ const resolveData = (req) => {
     });
   });
 };
+
+const hasExisted = (fileHash, filename, res) => {
+  const ext = getExt(filename);
+  const filepath = `${UPLOAD_DIR}/${fileHash}.${ext}`;
+  if (fse.existsSync(filepath)) {
+    res.end(
+      JSON.stringify({
+        success: true,
+      }),
+    );
+    return true;
+  }
+  return false;
+};
+
 async function handleMerge(req, res) {
   const data = await resolveData(req);
-  const { filename } = data;
-  await mergeChunk(`${UPLOAD_DIR}/${filename}`, filename);
+  const { filename, fileHash } = data;
+
+  if (hasExisted(fileHash, filename, res)) {
+    return true;
+  }
+  const ext = getExt(filename);
+  const filepath = `${UPLOAD_DIR}/${fileHash}.${ext}`;
+  await mergeChunk(filepath, fileHash);
 }
 
-const mergeChunk = async (filepath, filename) => {
-  const chunkDir = `${UPLOAD_DIR}/${filename.replace(".", "_")}`;
+const mergeChunk = async (filepath, fileHash) => {
+  const chunkDir = `${UPLOAD_DIR}/${fileHash}`;
   const chunkPaths = await fse.readdir(chunkDir);
   await fse.writeFile(filepath, "");
   chunkPaths.forEach((chunkPath) => {
     fse.appendFileSync(filepath, fse.readFileSync(`${chunkDir}/${chunkPath}`));
-    fse.unlinkSync(`${chunkDir}/${chunkPath}`);
+    // fse.unlinkSync(`${chunkDir}/${chunkPath}`);
   });
-  fse.rmdirSync(chunkDir);
+
+  // fse.rmdirSync(chunkDir);
 };
 
 function handleRequest(req) {

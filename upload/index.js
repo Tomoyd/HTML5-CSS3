@@ -48,21 +48,22 @@ function createFileChunk(file, length = LENGTH) {
   return fileChunkList;
 }
 //   https://mp.weixin.qq.com/s/bzl4_O-bEU1h-6Vh8ZurlQ
-async function uploadChunks(fileData = [], filename) {
-  const progress = document.querySelector(".progress");
+async function uploadChunks(fileData = [], filename, fileHash) {
   const requestList = fileData
-    .map(({ chunk, hash }) => {
+    .map(({ chunk, hash }, index) => {
       const formData = new FormData();
       formData.append("chunk", chunk);
       formData.append("hash", hash);
       formData.append("filename", filename);
+      formData.append("chunkHash", fileHash + "-" + index);
+      formData.append("fileHash", fileHash);
       return { formData };
     })
     .map(({ formData }, index) =>
       request({
         url: "http://localhost:3000",
         data: formData,
-        onProgress: handleProgress,
+        onProgress: (e) => handleProgress(e, index),
       }),
     );
   console.log(`requestList`, requestList);
@@ -83,19 +84,57 @@ async function handleUpload() {
   if (!container.file) return;
   selectors = document.querySelector(".ul").children;
   const fileChunkList = createFileChunk(container.file);
+  const hash = await createFileHash(fileChunkList);
   const fileData = fileChunkList.map(({ file }, index) => ({
+    fileHash: hash,
     chunk: file,
     hash: container.file.name + "_" + index,
   }));
   container.data = fileData;
-  await uploadChunks(fileData, container.file.name);
+  const res = await requestHasResource();
+  if (res.data.includes("true")) {
+    return;
+  }
+  await uploadChunks(fileData, container.file.name, hash);
   await mergeRequest();
 }
 
 async function mergeRequest() {
+  console.log("container.file :>> ", container.file);
   await request({
     url: "http://localhost:3000/merge",
     headers: { "Content-Type": "application/json" },
-    data: JSON.stringify({ filename: container.file.name }),
+    data: JSON.stringify({
+      filename: container.file.name,
+      fileHash: container.fileHash,
+    }),
+  });
+}
+
+async function requestHasResource() {
+  console.log("container.file :>> ", container.file);
+  return await request({
+    url: "http://localhost:3000/hasExit",
+    headers: { "Content-Type": "application/json" },
+    data: JSON.stringify({
+      filename: container.file.name,
+      fileHash: container.fileHash,
+    }),
+  });
+}
+
+function createFileHash(fileChunkList) {
+  return new Promise((resolve) => {
+    container.worker = new Worker("./worker.js");
+    container.worker.postMessage({ fileChunkList });
+
+    container.worker.onmessage = (e) => {
+      const { percentage, hash } = e.data;
+      container.percentage = percentage;
+      if (hash) {
+        container.fileHash = hash;
+        resolve(hash);
+      }
+    };
   });
 }
