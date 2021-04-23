@@ -1,5 +1,5 @@
 self.importScripts("./module/spark-md5.min.js");
-
+// **
 self.onmessage = (e) => {
   const { fileChunkList } = e.data;
   const spark = new self.SparkMD5.ArrayBuffer();
